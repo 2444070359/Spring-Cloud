@@ -1,0 +1,48 @@
+server:
+  port: 8999
+spring:
+  application:
+    name: zuul-service
+#zuul:
+ # routes:
+  #  user-service: # 这里是路由id，随意写
+   #   path: /user-service/** # 这里是映射路径 转到user-servcie
+    #  url: http://127.0.0.1:8889 # 映射路径对应的实际url地址 user-service的端口
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8899/eureka
+    registry-fetch-interval-seconds: 5 # 获取服务列表的周期：5s
+  instance:
+    prefer-ip-address: true # 当调用getHostname获取实例的hostname时，返回ip而不是host名称
+    ip-address: 127.0.0.1 # 指定自己的ip信息，不指定的话会自己寻找
+#zuul:
+ # routes:
+  #  user-service: # 这里是路由id，随意写
+   #   path: /user-service/** # 这里是映射路径
+    #  serviceId: user-service # 指定服务名称
+#zuul:
+#  routes:
+ #   user-service: /user-service/** # 这里是映射路径
+  #ignored-services:
+   # - customer-demo  #不暴露服务
+zuul:
+  prefix: /api
+  routes:
+    user-service:
+      path: /user/**
+      serviceId: user-service
+      strip-prefix: false #不截取/user
+#day0315
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMillisecond: 6000 # 熔断超时时长：6000ms
+#day0315
+ribbon:
+  ConnectionTimeOut: 500 # 连接超时时间(ms)
+  ReadTimeOut: 4000 # 通信超时时间(ms)
+  MaxAutoRetriesNextServer: 2 # 同一服务不同实例的重试次数
